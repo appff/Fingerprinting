@@ -31,7 +31,7 @@ public class JSONBuilder extends BufferExtractor {
 		JSONBuilder jb = new JSONBuilder();
 		jb.methodlist = Arrays.asList("<init>", "accumulate", "setEntity",
 				"setHeader", "toString", "append", "put");
-		jb.ExtractingSignature("C:\\android_source\\flowdroid\\soot-develop\\systests\\programslices\\cnn_receive.jimple");
+		jb.ExtractingSignature("D:\\Dropbox\\Dropbox\\카이스트\\INA\\android\\Github\\soot\\systests\\programslices\\cnn_receive.jimple");
 		// jb.printBuffer(jb.hmBuffer, "$r9");
 	}
 

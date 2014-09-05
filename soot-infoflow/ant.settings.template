@@ -1,0 +1,10 @@
+#Fill the following paths to compile with jars:
+
+#Location of soot.jar
+soot.jar=
+
+# Target JAR file
+infoflow.jar=
+infoflow-tests.jar=
+
+# TODO: compile with projects checked out and recompile them with build.xml

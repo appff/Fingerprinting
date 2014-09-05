@@ -1,0 +1,77 @@
+public class example_dummy
+{
+	public static void main()
+	{
+        java.lang.String $r0, $r2, $r3, $r18;
+        java.util.List $r1;
+        java.lang.Exception $r4;
+        java.lang.Object $r5;
+        java.util.Iterator $r8;
+        org.json.JSONObject $r9, $r10, $r26;
+        org.apache.http.HttpResponse $r12;
+        int $i0;
+        java.lang.StringBuilder $r14, $r23;
+        com.cnn.mobile.android.phone.CNNApp $r15;
+        android.content.Context $r16;
+        com.cnn.mobile.android.phone.service.ConfigHelper $r17;
+        boolean $z0;
+        com.turner.notify.sdk.Feature $r19;
+        org.apache.http.StatusLine $r21;
+        org.apache.http.impl.client.DefaultHttpClient $r22;
+        org.apache.http.client.methods.HttpPost $r24;
+        org.json.JSONArray $r25;
+        org.apache.http.entity.StringEntity $r27;
+        org.apache.http.message.BasicHeader $r28;
+        org.apache.http.client.HttpClient $r29;
+
+        $r0 := @parameter0: java.lang.String;
+        $r1 := @parameter1: java.util.List;
+        $r2 := @parameter2: java.lang.String;
+
+        $r22 = new org.apache.http.impl.client.DefaultHttpClient;
+        specialinvoke $r22.<org.apache.http.impl.client.DefaultHttpClient: void <init>()>();
+        $r10 = new org.json.JSONObject;
+        $r9 = $r10;
+        specialinvoke $r10.<org.json.JSONObject: void <init>()>();
+        $r24 = new org.apache.http.client.methods.HttpPost;
+        $r23 = new java.lang.StringBuilder;
+        specialinvoke $r23.<java.lang.StringBuilder: void <init>()>();
+
+        $r14 = virtualinvoke $r23.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+        $r14 = virtualinvoke $r14.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/pns-mobile/");
+        $r14 = virtualinvoke $r14.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/feature-action");
+        $r3 = virtualinvoke $r14.<java.lang.StringBuilder: java.lang.String toString()>();
+        
+        specialinvoke $r24.<org.apache.http.client.methods.HttpPost: void <init>(java.lang.String)>($r3);
+        virtualinvoke $r10.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("action", $r2);
+        virtualinvoke $r10.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("deviceToken", $r0);
+        virtualinvoke $r10.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("platform", "GCM");
+        
+        $r3 = staticinvoke <com.cnn.mobile.android.phone.service.GCMIntentService: java.lang.String getAppName()>();
+        virtualinvoke $r10.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("appName", $r3);
+        
+        $r25 = new org.json.JSONArray;
+        specialinvoke $r25.<org.json.JSONArray: void <init>()>();
+
+        $r19 = (com.turner.notify.sdk.Feature) $r5;
+        $r26 = new org.json.JSONObject;
+        specialinvoke $r26.<org.json.JSONObject: void <init>()>();
+        $r3 = virtualinvoke $r19.<com.turner.notify.sdk.Feature: java.lang.String getName()>();
+        virtualinvoke $r26.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("name", $r3);
+        $r3 = virtualinvoke $r19.<com.turner.notify.sdk.Feature: java.lang.String getPath()>();
+        virtualinvoke $r26.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("path", $r3);
+        virtualinvoke $r25.<org.json.JSONArray: org.json.JSONArray put(java.lang.Object)>($r26);
+
+        virtualinvoke $r9.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("features", $r25);
+        $r27 = new org.apache.http.entity.StringEntity;
+        $r18 = virtualinvoke $r9.<org.json.JSONObject: java.lang.String toString()>();
+        specialinvoke $r27.<org.apache.http.entity.StringEntity: void <init>(java.lang.String)>($r18);
+        $r28 = new org.apache.http.message.BasicHeader;
+       
+        virtualinvoke $r24.<org.apache.http.client.methods.HttpPost: void setEntity(org.apache.http.HttpEntity)>($r27);
+        $r29 = (org.apache.http.client.HttpClient) $r22;
+        $r12 = virtualinvoke $r29.<org.apache.http.client.HttpClient: org.apache.http.HttpResponse execute(org.apache.http.client.methods.HttpUriRequest)>($r24);
+      
+        return 1;
+	}
+}

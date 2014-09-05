@@ -1,0 +1,5 @@
+<org.json.JSONObject: void <init>()> -> _SOURCE_
+<org.apache.http.client.HttpClient: org.apache.http.HttpResponse execute(org.apache.http.client.methods.HttpUriRequest)> -> _SINK_
+%<android.widget.EditText: android.text.Editable getText()> -> _SOURCE_
+%<android.content.ContextWrapper: java.io.FileOutputStream openFileOutput(java.lang.String , int )> -> _SINK_
+%<android.app.Activity: void finish()> -> _SINK_
