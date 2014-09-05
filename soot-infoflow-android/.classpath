@@ -10,6 +10,6 @@
 	<classpathentry kind="lib" path="lib/slf4j-simple-1.7.5.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-api-1.7.5.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/soot-infoflow"/>
-	<classpathentry kind="lib" path="lib/soot-trunk.jar"/>
+	<classpathentry kind="lib" path="D:/Github/soot-infoflow-android/lib/soot-trunk.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

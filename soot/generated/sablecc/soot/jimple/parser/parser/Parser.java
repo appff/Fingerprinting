@@ -7584,6 +7584,7 @@ public class Parser
         }
         catch(Exception e)
         {
+        	System.out.println(e);
             throw new RuntimeException("The file \"parser.dat\" is either missing or corrupted.");
         }
     }
