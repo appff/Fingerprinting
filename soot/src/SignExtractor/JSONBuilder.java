@@ -26,13 +26,68 @@ public class JSONBuilder extends BufferExtractor {
 		public static final int append = 5;
 		public static final int put = 6;
 	}
+	
+	public class Vtypes {
+		public static final int vint = 0;
+		public static final int vstring = 1;
+		public static final int vjsonarray = 2;
+		public static final int vconst = 3;
+	}
 
 	public static void main(String args[]) throws Exception {
 		JSONBuilder jb = new JSONBuilder();
 		jb.methodlist = Arrays.asList("<init>", "accumulate", "setEntity",
 				"setHeader", "toString", "append", "put");
+		jb.TrackingReg = "$r10";
 		jb.ExtractingSignature("D:\\Github\\soot\\systests\\programslices\\cnn_receive.jimple");
-		// jb.printBuffer(jb.hmBuffer, "$r9");
+		//jb.printBuffer(jb.hmBuffer, "$r9");
+	}
+
+	@Override
+	public void GetEquivalenttb(HashMap<String, Tree> BFTtable,
+			HashMap<String, EquvNode> EQtable, String TrackingReg) {
+		Tree BTTree = BFTtable.get(TrackingReg);
+
+		for (Iterator<BFNode> iter = BTTree.preOrderTraversal().iterator(); iter.hasNext() ;) {
+			BFNode bfn = iter.next();
+			
+			try {
+				if ( BTTree.parent(bfn) == null ) {
+					//System.out.println("Root!");
+					switch (checkVtype(bfn))
+					{
+					case Vtypes.vstring:
+						break;
+					case Vtypes.vconst:
+						break;
+					case Vtypes.vint:
+						break;
+					case Vtypes.vjsonarray:
+						break;
+					default:
+						System.out.println("Error!");
+						break;
+					}
+				}
+			} catch (NodeNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private int checkVtype(BFNode bfn)
+	{
+		if ( bfn.getVtype() == "String" )
+			return Vtypes.vstring;
+		else if (bfn.getVtype() == "int" )
+			return Vtypes.vint;
+		else if (bfn.getVtype() == "JSONArray")
+			return Vtypes.vjsonarray;
+		else if (isconst(bfn.getValue()))
+			return Vtypes.vconst;
+		
+		return -1;
 	}
 
 	@Override
@@ -44,7 +99,8 @@ public class JSONBuilder extends BufferExtractor {
 	@Override
 	public void ExtractingExpr(InstanceInvokeExpr iie,
 			HashMap<String, SymbolEntry> SMtable,
-			HashMap<String, Tree> BFTtable, Unit ut) throws NodeNotFoundException {
+			HashMap<String, Tree> BFTtable, Unit ut)
+			throws NodeNotFoundException {
 
 		String strMethod = iie.getMethodRef().name();
 		List<Value> args = new ArrayList<Value>();
@@ -82,30 +138,29 @@ public class JSONBuilder extends BufferExtractor {
 			break;
 		}
 	}
-	
+
 	public void setEntityfuncHandler(InstanceInvokeExpr iie,
 			HashMap<String, SymbolEntry> SMtable,
 			HashMap<String, Tree> BFTtable, Unit ut) {
-		
 	}
-	
+
 	public void StringEntityfuncHandler(InstanceInvokeExpr iie,
 			HashMap<String, SymbolEntry> SMtable,
 			HashMap<String, Tree> BFTtable, Unit ut) {
 		if (iie.getMethodRef().toString() == "<org.apache.http.entity.StringEntity: void <init>(java.lang.String)>") {
-			
+
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public void printTree(Tree tr, String Treename)
-	{
+	public void printTree(Tree tr, String Treename) {
 		System.out.println("===============================");
-		System.out.println("Tree " + Treename +" PreorderTraversal");
-		for ( Iterator<BFNode> iter = tr.preOrderTraversal().iterator(); iter.hasNext(); )
-		{
+		System.out.println("Tree " + Treename + " PreorderTraversal");
+		for (Iterator<BFNode> iter = tr.preOrderTraversal().iterator(); iter
+				.hasNext();) {
 			BFNode bfn = iter.next();
-			System.out.print(bfn.getKey() + ":" + bfn.getValue() + "\tVtype : " + bfn.getVtype());
+			System.out.print(bfn.getKey() + ":" + bfn.getValue() + "\tVtype : "
+					+ bfn.getVtype());
 			try {
 				System.out.print("\nThis : " + bfn);
 				System.out.println("\nParent : " + tr.parent(bfn));
@@ -116,60 +171,63 @@ public class JSONBuilder extends BufferExtractor {
 		}
 		System.out.println("Tree depth : " + tr.depth());
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public void putfuncHandler(InstanceInvokeExpr iie,
 			HashMap<String, SymbolEntry> SMtable,
-			HashMap<String, Tree> BFTtable, Unit ut) throws NodeNotFoundException {
+			HashMap<String, Tree> BFTtable, Unit ut)
+			throws NodeNotFoundException {
 		if (iie.getMethodRef().toString() == "<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>") {
-			if ( isconst(iie.getArg(1).toString()) ) {
-				Tree BFTree = BFTtable.get(iie.getBase().toString());
-				if (BFTree != null) {
+			if (isconst(iie.getArg(1).toString())) {
+				Tree BTTree = BFTtable.get(iie.getBase().toString());
+				if (BTTree != null) {
 					BFNode bfn = new BFNode();
 
 					bfn.setKey(iie.getArg(0).toString());
 					bfn.setValue(iie.getArg(1).toString());
 					bfn.setVtype(iie.getArg(1).getType().toString());
-					BFTree.add(bfn);
-//					printTree(BFTree,iie.getBase().toString());
+					BTTree.add(bfn);
+					// printTree(BTTree,iie.getBase().toString());
 				}
 			} else {
-				Tree BFTree = BFTtable.get(iie.getBase().toString());
-				if ( BFTree != null ) {
+				Tree BTTree = BFTtable.get(iie.getBase().toString());
+				if (BTTree != null) {
 					SymbolEntry se = SMtable.get(iie.getArg(1).toString());
-					if ( se != null ) {
-						if ( iie.getArg(1).getType().toString().indexOf("JSONArray") == -1 ) {
+					if (se != null) {
+						if (iie.getArg(1).getType().toString()
+								.indexOf("JSONArray") == -1) {
 							BFNode bfn = new BFNode();
 							bfn.setKey(iie.getArg(0).toString());
 							bfn.setValue(se.getValue());
 							bfn.setVtype(se.getType());
-							BFTree.add(bfn);
-//							printTree(BFTree,iie.getBase().toString());
+							BTTree.add(bfn);
+							// printTree(BTTree,iie.getBase().toString());
 						} else {
 							BFNode parent = new BFNode();
 							parent.setKey(iie.getArg(0).toString());
 							parent.setValue(null);
 							parent.setVtype(iie.getArg(1).getType().toString());
-							BFTree.add(parent);
-							
-							//Copy tree
-							Tree SrcTree = BFTtable.get(iie.getArg(1).toString());
-							if ( SrcTree != null ) {
-								//must tree traversal! parent change
-								copytree(BFTree, SrcTree, parent);
-//								printTree(BFTree,iie.getBase().toString());
+							BTTree.add(parent);
+
+							// Copy tree
+							Tree SrcTree = BFTtable.get(iie.getArg(1)
+									.toString());
+							if (SrcTree != null) {
+								// must tree traversal! parent change
+								copytree(BTTree, SrcTree, parent);
+								// printTree(BTTree,iie.getBase().toString());
 							}
 						}
 					}
 				}
 			}
 		} else if (iie.getMethodRef().toString() == "<org.json.JSONArray: org.json.JSONArray put(java.lang.Object)>") {
-			if ( iie.getArg(0).getType().toString().indexOf("JSONObject") != -1 ) {
-				Tree BFTree = BFTtable.get(iie.getBase().toString());
-				if ( BFTree != null ) {
+			if (iie.getArg(0).getType().toString().indexOf("JSONObject") != -1) {
+				Tree BTTree = BFTtable.get(iie.getBase().toString());
+				if (BTTree != null) {
 					Tree SrcTree = BFTtable.get(iie.getArg(0).toString());
-					if ( SrcTree != null ) {
-						copytree(BFTree, SrcTree, (BFNode)BFTree.root());
+					if (SrcTree != null) {
+						copytree(BTTree, SrcTree, (BFNode) BTTree.root());
 					}
 				}
 			}
@@ -187,20 +245,20 @@ public class JSONBuilder extends BufferExtractor {
 			HashMap<String, SymbolEntry> SMtable,
 			HashMap<String, Tree> BFTtable, Unit ut) {
 		if (iie.getMethodRef().toString() == "<org.apache.http.impl.client.DefaultHttpClient: void <init>()>") {
-//			System.out.println("Init DefaultHttpClient");
+			// System.out.println("Init DefaultHttpClient");
 		} else if (iie.getMethodRef().toString() == "<org.json.JSONObject: void <init>()>") {
-//			System.out.println("Init JSONObject");
+			// System.out.println("Init JSONObject");
 		} else if (iie.getMethodRef().toString() == "<java.lang.StringBuilder: void <init>()>") {
-//			System.out.println("Init StringBuilder");
+			// System.out.println("Init StringBuilder");
 		} else if (iie.getMethodRef().toString() == "<org.apache.http.client.methods.HttpPost: void <init>(java.lang.String)>") {
-//			System.out.println("Init HttpPost(String)");
+			// System.out.println("Init HttpPost(String)");
 		} else if (iie.getMethodRef().toString() == "<org.json.JSONArray: void <init>()>") {
-//			System.out.println("Init JSONArray");
+			// System.out.println("Init JSONArray");
 		} else if (iie.getMethodRef().toString() == "<org.apache.http.entity.StringEntity: void <init>(java.lang.String)>") {
-//			System.out.println("Init StringEntity(String)");
+			// System.out.println("Init StringEntity(String)");
 		}
 	}
-	
+
 	public boolean isconst(String arg) {
 		if (arg.indexOf("$") != -1)
 			return false;
@@ -212,20 +270,19 @@ public class JSONBuilder extends BufferExtractor {
 	public void copytree(Tree DstTree, Tree SrcTree, BFNode parent) {
 		try {
 			DstTree.addAll(parent, SrcTree);
-			
-			for ( Iterator<BFNode> iter = DstTree.children(parent).iterator(); iter.hasNext(); )
-			{
+
+			for (Iterator<BFNode> iter = DstTree.children(parent).iterator(); iter
+					.hasNext();) {
 				BFNode bfn = iter.next();
-				if ( bfn.getKey() == null && bfn.getVtype() == null )
-				{
+				if (bfn.getKey() == null && bfn.getVtype() == null) {
 					DstTree.remove(bfn);
 				}
 			}
-			
+
 		} catch (NodeNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		printTree(DstTree, "combined tree");
+//		printTree(DstTree, "combined tree");
 	}
 }
