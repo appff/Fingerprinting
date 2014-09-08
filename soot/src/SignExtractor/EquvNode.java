@@ -1,23 +1,32 @@
 package SignExtractor;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class EquvNode {
 	private String Parent;
-	private HashMap<String, List<BFNode>> BFlist;
+	private HashMap<String, ArrayList<BFNode>> ENtable;
 	
-	public HashMap<String, List<BFNode>> getBFlist() {
-		return BFlist;
+	public EquvNode() {
+		ENtable = new HashMap<String, ArrayList<BFNode>>();
+		ENtable.put("String",  new ArrayList<BFNode>());
+		ENtable.put("int",  new ArrayList<BFNode>());
+		ENtable.put("Const",  new ArrayList<BFNode>());
+		ENtable.put("JSONArray",  new ArrayList<BFNode>());
+		ENtable.put("double",  new ArrayList<BFNode>());
 	}
-	public void setBFlist(HashMap<String, List<BFNode>> bFlist) {
-		BFlist = bFlist;
-	}
+	
 	public String getParent() {
 		return Parent;
 	}
 	public void setParent(String parent) {
 		Parent = parent;
+	}
+	public HashMap<String, ArrayList<BFNode>> getENtable() {
+		return ENtable;
+	}
+	public void setENtable(HashMap<String, ArrayList<BFNode>> bFtable) {
+		ENtable = bFtable;
 	}
 	
 }

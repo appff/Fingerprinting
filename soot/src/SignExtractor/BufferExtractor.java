@@ -32,7 +32,7 @@ public abstract class BufferExtractor {
 			HashMap<String, Tree> BFTtable, Unit ut)
 			throws NodeNotFoundException;
 	
-	abstract public void GetEquivalenttb(HashMap<String, Tree> BFTtable, HashMap<String, EquvNode> EQtable, String TrackingReg);
+	abstract public void GetEquivalenttb(HashMap<String, Tree> BFTtable, HashMap<String, EquvNode> EQtable, String TrackingReg) throws NodeNotFoundException;
 
 	@SuppressWarnings({ "unused", "unchecked" })
 	public void ExtractingSignature(String filepath) throws java.lang.Exception {

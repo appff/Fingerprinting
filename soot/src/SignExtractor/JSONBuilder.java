@@ -26,7 +26,7 @@ public class JSONBuilder extends BufferExtractor {
 		public static final int append = 5;
 		public static final int put = 6;
 	}
-	
+
 	public class Vtypes {
 		public static final int vint = 0;
 		public static final int vstring = 1;
@@ -40,53 +40,157 @@ public class JSONBuilder extends BufferExtractor {
 				"setHeader", "toString", "append", "put");
 		jb.TrackingReg = "$r10";
 		jb.ExtractingSignature("D:\\Github\\soot\\systests\\programslices\\cnn_receive.jimple");
-		//jb.printBuffer(jb.hmBuffer, "$r9");
+		// jb.printBuffer(jb.hmBuffer, "$r9");
 	}
 
 	@Override
 	public void GetEquivalenttb(HashMap<String, Tree> BFTtable,
-			HashMap<String, EquvNode> EQtable, String TrackingReg) {
+			HashMap<String, EquvNode> EQtable, String TrackingReg) throws NodeNotFoundException {
 		Tree BTTree = BFTtable.get(TrackingReg);
 
-		for (Iterator<BFNode> iter = BTTree.preOrderTraversal().iterator(); iter.hasNext() ;) {
+		for (Iterator<BFNode> iter = BTTree.preOrderTraversal().iterator(); iter
+				.hasNext();) {
 			BFNode bfn = iter.next();
-			
-			try {
-				if ( BTTree.parent(bfn) == null ) {
-					//System.out.println("Root!");
-					switch (checkVtype(bfn))
-					{
-					case Vtypes.vstring:
-						break;
-					case Vtypes.vconst:
-						break;
-					case Vtypes.vint:
-						break;
-					case Vtypes.vjsonarray:
-						break;
-					default:
-						System.out.println("Error!");
-						break;
-					}
-				}
-			} catch (NodeNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if (bfn.getKey() == null)
+				continue;
+			// printTree(BTTree, "R10");
+			@SuppressWarnings("unchecked")
+			BFNode prt = (BFNode) BTTree.parent(bfn);
+
+			if (prt.getKey() == null) {
+				SetEqtable("root", EQtable, bfn);
 			}
+			else{
+				SetEqtable(prt.getKey(), EQtable, bfn);
+			}
+		}
+		
+		GenRegx(EQtable, "root");
+	}
+	
+	private void GenRegx(HashMap<String, EquvNode> EQtable,String key)
+	{
+		EquvNode en = EQtable.get(key);
+		HashMap<String, ArrayList<BFNode>> ENtable = en.getENtable();
+		ArrayList<BFNode> al = null;
+		int i = 1;
+		
+		System.out.print("{");
+		
+		al = ENtable.get("String");
+		System.out.print("((");
+		for ( BFNode bfn : al ) {
+			System.out.print("(" + bfn.getKey() + ")");
+			if ( al.size() > i )
+				System.out.print("|");
+			else {
+				System.out.print(")*");
+				System.out.print(":");
+			}
+			i++;
+		}
+		System.out.print("\"[a-z0-9A-Z]*\",*)*");
+		
+		i = 1;
+		al = ENtable.get("Const");
+		for ( BFNode bfn : al ) {
+			System.out.print(bfn.getKey()+":"+bfn.getValue());
+			if ( al.size() > i )
+				System.out.print(",");
+			i++;
+		}
+		
+		
+		al = ENtable.get("JSONArray");
+		
+		if ( al.size() > 0 )
+			System.out.print(",");
+		
+		for ( BFNode bfn : al ) {
+			System.out.print(bfn.getKey()+":");
+			GenRegx(EQtable, bfn.getKey());
+		}
+		
+		System.out.print("}");
+	}
+	
+	private void SetEqtable(String key, HashMap<String, EquvNode> EQtable, BFNode bfn) {
+		EquvNode en = null;
+		en = getEquvNode(key, EQtable);
+		HashMap<String, ArrayList<BFNode>> ENtable = null;
+		ENtable = en.getENtable();
+		// System.out.println("Root!");
+		switch (checkVtype(bfn)) {
+		case Vtypes.vstring:
+			ENtable.get("String").add(bfn);
+//			System.out.println("String key : " + bfn.getKey());
+			break;
+		case Vtypes.vconst:
+			ENtable.get("Const").add(bfn);
+//			System.out.println("Const key : " + bfn.getKey());
+			break;
+		case Vtypes.vint:
+			ENtable.get("int").add(bfn);
+//			System.out.println("int key : " + bfn.getKey());
+			break;
+		case Vtypes.vjsonarray:
+			ENtable.get("JSONArray").add(bfn);
+//			System.out.println("JSONArray key : " + bfn.getKey());
+			break;
+		default:
+//			System.out.println("Error!");
+			break;
 		}
 	}
 	
-	private int checkVtype(BFNode bfn)
-	{
-		if ( bfn.getVtype() == "String" )
-			return Vtypes.vstring;
-		else if (bfn.getVtype() == "int" )
-			return Vtypes.vint;
-		else if (bfn.getVtype() == "JSONArray")
-			return Vtypes.vjsonarray;
-		else if (isconst(bfn.getValue()))
-			return Vtypes.vconst;
+	//traversal Equivalent table
+	private void printEqtable(HashMap<String, EquvNode> EQtable,String key) {
+		EquvNode en = EQtable.get(key);
+		HashMap<String, ArrayList<BFNode>> ENtable = en.getENtable();
+		ArrayList<BFNode> al = null;
 		
+		System.out.println("key : " + key);
+		al = ENtable.get("String");
+		for ( BFNode bfn : al ) {
+			System.out.println("String OR : " + bfn.getKey());
+		}
+		
+		al = ENtable.get("Const");
+		for ( BFNode bfn : al ) {
+			System.out.println("Const OR : " + bfn.getKey());
+		}
+		
+		al = ENtable.get("JSONArray");
+		for ( BFNode bfn : al ) {
+			System.out.println("JSONArray OR : " + bfn.getKey());
+			printEqtable(EQtable, bfn.getKey());
+		}
+		
+	}
+	
+	private EquvNode getEquvNode(String key, HashMap<String, EquvNode> EQtable) {
+		if (EQtable.containsKey(key)) {
+			EquvNode qn = EQtable.get(key);
+			return qn;
+		} else {
+			EquvNode qn = new EquvNode();
+			EQtable.put(key, qn);
+			return qn;
+		}
+	}
+
+	private int checkVtype(BFNode bfn) {
+
+		if (bfn.getVtype().indexOf("String") != -1) {
+			if (bfn.getValue() == null)
+				return Vtypes.vstring;
+			else if ( isconst(bfn.getValue()) )
+				return Vtypes.vconst;
+		} else if (bfn.getVtype().indexOf("int") != -1)
+			return Vtypes.vint;
+		else if (bfn.getVtype().indexOf("JSONArray") != -1)
+			return Vtypes.vjsonarray;
+
 		return -1;
 	}
 
@@ -283,6 +387,6 @@ public class JSONBuilder extends BufferExtractor {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-//		printTree(DstTree, "combined tree");
+		// printTree(DstTree, "combined tree");
 	}
 }
