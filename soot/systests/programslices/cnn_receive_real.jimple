@@ -1,0 +1,38 @@
+public class example_dummy
+{
+	public static void main()
+	{
+        java.lang.String $r0, $r2, $r3, $r18, $r6;
+        java.util.List $r1;
+        java.lang.Exception $r4;
+        java.lang.Object $r5;
+        java.util.Iterator $r8;
+        org.json.JSONObject $r9, $r10, $r26;
+        org.apache.http.HttpResponse $r12;
+        int $i0;
+        java.lang.StringBuilder $r14, $r23;
+        com.cnn.mobile.android.phone.CNNApp $r15;
+        android.content.Context $r16;
+        com.cnn.mobile.android.phone.service.ConfigHelper $r17;
+        boolean $z0;
+        com.turner.notify.sdk.Feature $r19;
+        org.apache.http.StatusLine $r21;
+        org.apache.http.impl.client.DefaultHttpClient $r22;
+        org.apache.http.client.methods.HttpPost $r24;
+        org.json.JSONArray $r25;
+        org.apache.http.entity.StringEntity $r27;
+        org.apache.http.message.BasicHeader $r28;
+        org.apache.http.client.HttpClient $r29;
+
+		specialinvoke $r9.<org.json.JSONObject: void <init>()>();
+        virtualinvoke $r9.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("action", $r2);
+        virtualinvoke $r9.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("deviceToken", $r0);
+		virtualinvoke $r9.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("platform", "GCM");
+		virtualinvoke $r9.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("appName", $r3);
+		virtualinvoke $r9.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("features", $r6);
+		$r18 = virtualinvoke $r9.<org.json.JSONObject: java.lang.String toString()>();
+		$r0 = virtualinvoke $r9.<org.json.JSONObject: java.lang.String toString()>();
+      
+        return 1;
+	}
+}

@@ -46,7 +46,6 @@ public class example_dummy
         virtualinvoke $r10.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("action", $r2);
         virtualinvoke $r10.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("deviceToken", $r0);
         virtualinvoke $r10.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("platform", "GCM");
-        
         $r3 = staticinvoke <com.cnn.mobile.android.phone.service.GCMIntentService: java.lang.String getAppName()>();
         virtualinvoke $r10.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("appName", $r3);
         
